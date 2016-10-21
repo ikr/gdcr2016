@@ -1,0 +1,19 @@
+{
+  "name": "@ikr/gdcr2016",
+  "version": "1.0.0",
+  "description": "Global Day of Code Retreat 2016",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R nyan ./index.js",
+    "tdd": "mocha -w -R min ./index.js",
+  },
+  "author": "Ivan Krechetov <ikr@ikr.su>",
+  "license": "MIT",
+  "repository": "https://github.com/ikr/gdcr2016.git",
+  "devDependencies": {
+    "mocha": "^3.1.2"
+  },
+  "dependencies": {
+    "ramda": "^0.22.1"
+  }
+}
