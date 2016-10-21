@@ -2,6 +2,11 @@ const assert = require('assert'),
       R = require('ramda');
 
 //------------------------------------------------------------------------------
+// 1. Live cell with fewer than 2 live neighbours dies
+// 2. Live cell with 2 or 3 live neighbours lives
+// 3. Live cell with more than 3 live neighbours dies
+// 4. Dead cell with exactly 3 live neighbours becomes a live cell
+//------------------------------------------------------------------------------
 
 const game = {};
 
