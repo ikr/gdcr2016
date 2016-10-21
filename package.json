@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -R nyan ./index.js",
-    "tdd": "mocha -w -R min ./index.js",
+    "tdd": "mocha -w -R min ./index.js"
   },
   "author": "Ivan Krechetov <ikr@ikr.su>",
   "license": "MIT",
