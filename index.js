@@ -1,6 +1,7 @@
 const assert = require('assert'),
       R = require('ramda');
 
+// function describe() {};
 //------------------------------------------------------------------------------
 // 1. Live cell with fewer than 2 live neighbours dies
 // 2. Live cell with 2 or 3 live neighbours lives
