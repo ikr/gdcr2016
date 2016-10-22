@@ -9,69 +9,83 @@ const assert = require('assert'),
 // 4. Dead cell with exactly 3 live neighbours becomes a live cell
 //------------------------------------------------------------------------------
 
-function neighboursCount(generation) {
-    return R.filter(isAdjacentToZero, generation).length;
-}
+function evolve(generation) {
+    const nextGeneration = [];
 
-function areAdjecent(cellA, cellB) {
-    return (
-        Math.abs(cellB[0] - cellA[0]) <= 1 &&
-        Math.abs(cellB[1] - cellA[1]) <= 1
-    );
-}
+    generation.forEach(p => {
+        let neighboursCount = 0;
 
-function isAdjacentToZero(p) {
-    return areAdjecent([0, 0], p);
+        generation.forEach(q => {
+            if (Math.abs(p[0] - q[0]) <= 1 && Math.abs(p[1] - q[1]) <= 1) {
+                neighboursCount++;
+            }
+        });
+
+        neighboursCount--;
+
+        if (neighboursCount === 2 || neighboursCount === 3) {
+            nextGeneration.push(p);
+        }
+    });
+
+    generation.forEach(p => {
+        const neighbours = [
+            [p[0] - 1, p[1] - 1],
+            [p[0] - 1, p[1]],
+            [p[0] - 1, p[1] + 1],
+            [p[0], p[1] - 1],
+            [p[0], p[1] + 1],
+            [p[0] + 1, p[1] - 1],
+            [p[0] + 1, p[1]],
+            [p[0] + 1, p[1] + 1]
+        ];
+
+        const newBorn = [];
+    });
+
+    generation.length = 0;
+    nextGeneration.forEach(p => {
+        generation.push(p);
+    });
 }
 
 //------------------------------------------------------------------------------
 
-describe('neighboursCount', () => {
-    it('is a function', () => {
-        assert.strictEqual(typeof neighboursCount, 'function');
+describe('evolve', () => {
+    it('is identical on an empty generation', () => {
+        const generation = [];
+        evolve(generation);
+        assert.deepEqual(generation, []);
     });
 
-    it('is 0 on an empty generation', () => {
-        assert.strictEqual(neighboursCount([], [0, 0]), 0);
+    it('eradicates a singleton', () => {
+        const generation = [[0, 0]];
+        evolve(generation);
+        assert.deepEqual(generation, []);
     });
 
-    it('is 1 for a generation-defining adjacent single cell', () => {
-        assert.strictEqual(neighboursCount([[0, 0]], [0, 1]), 1);
+    it('keeps the middle of 3 in a row', () => {
+        const generation = [[0, 0], [1, 0], [2, 0]];
+        evolve(generation);
+        assert.deepEqual(generation, [[1, 0]]);
     });
 
-    it('is 0 for', () => {
-        assert.strictEqual(neighboursCount([[1, 2]], [0, 0]), 0);
-    });
-});
+    it('keeps the block intact', () => {
+        const generation = [
+            [0, 0], [1, 0],
+            [0, 1], [1, 1]
+        ];
 
-describe('areAdjecent', () => {
-    it('is false for 0,0 and 100,100', () => {
-        assert(!areAdjecent([0, 0], [100, 100]));
-    });
-
-    it('is true for 0,0 and 1,0', () => {
-        assert(areAdjecent([0, 0], [1, 0]));
-    });
-
-    it('is true for 1,0 and 0,0', () => {
-        assert(areAdjecent([1, 0], [0, 0]));
+        evolve(generation);
+        assert.deepEqual(generation, [
+            [0, 0], [1, 0],
+            [0, 1], [1, 1]
+        ]);
     });
 
-    it('is true for 0,0 and 0,1', () => {
-        assert(areAdjecent([0, 0], [0, 1]));
-    });
-
-    it('is true for 0,1 and 0,0', () => {
-        assert(areAdjecent([0, 1], [0, 0]));
-    });
-});
-
-describe('isAdjacentToZero', () => {
-    it('is a func', () => {
-        assert.strictEqual(typeof isAdjacentToZero, 'function');
-    });
-
-    it('is true on 1,0', () => {
-        assert(isAdjacentToZero([1, 0]));
+    it('blinks', () => {
+        const generation = [[0, 0], [1, 0], [2, 0]];
+        evolve(generation);
+        assert.deepEqual(generation, [[-1, 1], [1, 0], [1, 1]]);
     });
 });
