@@ -9,84 +9,69 @@ const assert = require('assert'),
 // 4. Dead cell with exactly 3 live neighbours becomes a live cell
 //------------------------------------------------------------------------------
 
-function newGeneration(currentGeneration) {
-    return currentGeneration;
+function neighboursCount(generation) {
+    return R.filter(isAdjacentToZero, generation).length;
 }
 
-function livingNeighboursCount() {
-    return 0;
+function areAdjecent(cellA, cellB) {
+    return (
+        Math.abs(cellB[0] - cellA[0]) <= 1 &&
+        Math.abs(cellB[1] - cellA[1]) <= 1
+    );
 }
 
-function allAdjacentCoordinates() {
-    const result = [];
-
-    for (let i = -1; i < 2; i++) {
-        for (let j = -1; j < 2; j++) {
-            if (i === 0 && j === 0) continue;
-            result.push([i, j]);
-        }
-    }
-
-    return result;
+function isAdjacentToZero(p) {
+    return areAdjecent([0, 0], p);
 }
 
 //------------------------------------------------------------------------------
 
-
-describe('newGeneration', () => {
-    it('is identical on an empty generation', () => {
-        assert.deepEqual(newGeneration([]), []);
+describe('neighboursCount', () => {
+    it('is a function', () => {
+        assert.strictEqual(typeof neighboursCount, 'function');
     });
 
-    it('is identical on a 3-cell triangle', () => {
-        assert.deepEqual(
-            newGeneration([[0, 0], [0, 1], [1, 1]]),
-            [[0, 0], [0, 1], [1, 1]]
-        );
+    it('is 0 on an empty generation', () => {
+        assert.strictEqual(neighboursCount([], [0, 0]), 0);
     });
 
-    it.skip('is empty on a lonely cell', () => {
-        assert.deepEqual(newGeneration([[0, 0]]), []);
-    });
-});
-
-describe('livingNeighboursCount', () => {
-    it('is 0 for an empty generation', () => {
-        assert.strictEqual(livingNeighboursCount([0, 0], []), 0);
+    it('is 1 for a generation-defining adjacent single cell', () => {
+        assert.strictEqual(neighboursCount([[0, 0]], [0, 1]), 1);
     });
 
-    it.skip('is 1 for a dead sibling of a living cell', () => {
-        assert.strictEqual(
-            livingNeighboursCount([0, 0], [[0, 1]]),
-            1
-        );
+    it('is 0 for', () => {
+        assert.strictEqual(neighboursCount([[1, 2]], [0, 0]), 0);
     });
 });
 
-describe('allAdjacentCoordinates', () => {
-    it('is an enumeration of all the deltas for (0, 0)', () => {
-        assert.deepEqual(allAdjacentCoordinates([0, 0]), [
-            [ -1, -1 ],
-            [ -1, 0 ],
-            [ -1, 1 ],
-            [ 0, -1 ],
-            [ 0, 1 ],
-            [ 1, -1 ],
-            [ 1, 0 ],
-            [ 1, 1 ]
-        ]);
+describe('areAdjecent', () => {
+    it('is false for 0,0 and 100,100', () => {
+        assert(!areAdjecent([0, 0], [100, 100]));
     });
 
-    it('is correct for (1, 0)', () => {
-        assert.deepEqual(allAdjacentCoordinates([1, 0]), [
-            [ 0, -1 ],
-            [ 0, 0 ],
-            [ 0, 1 ],
-            [ 1, -1 ],
-            [ 1, 1 ],
-            [ 2, -1 ],
-            [ 2, 0 ],
-            [ 2, 1 ]
-        ]);
+    it('is true for 0,0 and 1,0', () => {
+        assert(areAdjecent([0, 0], [1, 0]));
+    });
+
+    it('is true for 1,0 and 0,0', () => {
+        assert(areAdjecent([1, 0], [0, 0]));
+    });
+
+    it('is true for 0,0 and 0,1', () => {
+        assert(areAdjecent([0, 0], [0, 1]));
+    });
+
+    it('is true for 0,1 and 0,0', () => {
+        assert(areAdjecent([0, 1], [0, 0]));
+    });
+});
+
+describe('isAdjacentToZero', () => {
+    it('is a func', () => {
+        assert.strictEqual(typeof isAdjacentToZero, 'function');
+    });
+
+    it('is true on 1,0', () => {
+        assert(isAdjacentToZero([1, 0]));
     });
 });
