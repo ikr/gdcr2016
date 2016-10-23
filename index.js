@@ -9,83 +9,55 @@ const assert = require('assert'),
 // 4. Dead cell with exactly 3 live neighbours becomes a live cell
 //------------------------------------------------------------------------------
 
-function evolve(generation) {
-    const nextGeneration = [];
+class World {
+    constructor() {
+        generation = new Generation();
 
-    generation.forEach(p => {
-        let neighboursCount = 0;
+    }
+}
 
-        generation.forEach(q => {
-            if (Math.abs(p[0] - q[0]) <= 1 && Math.abs(p[1] - q[1]) <= 1) {
-                neighboursCount++;
-            }
+class Generation {
+    evolve(aliveCells) {
+
+
+        this.aliveCells.forEach(c => {
+
         });
+    }
+}
 
-        neighboursCount--;
-
-        if (neighboursCount === 2 || neighboursCount === 3) {
-            nextGeneration.push(p);
-        }
-    });
-
-    generation.forEach(p => {
-        const neighbours = [
-            [p[0] - 1, p[1] - 1],
-            [p[0] - 1, p[1]],
-            [p[0] - 1, p[1] + 1],
-            [p[0], p[1] - 1],
-            [p[0], p[1] + 1],
-            [p[0] + 1, p[1] - 1],
-            [p[0] + 1, p[1]],
-            [p[0] + 1, p[1] + 1]
-        ];
-
-        const newBorn = [];
-    });
-
-    generation.length = 0;
-    nextGeneration.forEach(p => {
-        generation.push(p);
-    });
+class Cell {
+    constructor(state, position) {
+        this.isAlive = state;
+    }
+    evolve(aliveCells) {
+        this.isAlive = false;
+        aliveCells.forEach(c => {
+        });
+    }
 }
 
 //------------------------------------------------------------------------------
 
-describe('evolve', () => {
-    it('is identical on an empty generation', () => {
-        const generation = [];
-        evolve(generation);
-        assert.deepEqual(generation, []);
+describe('Cell', () => {
+    describe('constructor', () => {
+        it('assigns isAlive attribute', () => {
+            const c = new Cell(true, [0,0]);
+            assert(c.isAlive);
+        });
     });
-
-    it('eradicates a singleton', () => {
-        const generation = [[0, 0]];
-        evolve(generation);
-        assert.deepEqual(generation, []);
-    });
-
-    it('keeps the middle of 3 in a row', () => {
-        const generation = [[0, 0], [1, 0], [2, 0]];
-        evolve(generation);
-        assert.deepEqual(generation, [[1, 0]]);
-    });
-
-    it('keeps the block intact', () => {
-        const generation = [
-            [0, 0], [1, 0],
-            [0, 1], [1, 1]
-        ];
-
-        evolve(generation);
-        assert.deepEqual(generation, [
-            [0, 0], [1, 0],
-            [0, 1], [1, 1]
-        ]);
-    });
-
-    it('blinks', () => {
-        const generation = [[0, 0], [1, 0], [2, 0]];
-        evolve(generation);
-        assert.deepEqual(generation, [[-1, 1], [1, 0], [1, 1]]);
+    describe('evolve', () => {
+        it('should die when there are no neighbours', () => {
+            const c = new Cell(true, [0,0]);
+            c.evolve([]);
+            assert(!c.isAlive);
+        });
+        it('should survive when there are two neighbours', () => {
+            const cc = new Cell(true, [0,0]);
+            const cd = new Cell(true, [1,0]);
+            const ce = new Cell(true, [1,1]);
+            cc.evolve([cd, ce]);
+            assert(cc.isAlive);
+        });
     });
 });
